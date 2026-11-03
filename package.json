@@ -1,0 +1,19 @@
+{
+  "name": "port-terminal-buddy",
+  "version": "1.0.0",
+  "description": "Port & Terminal Buddy on APK.audio",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "keywords": [
+    "port",
+    "terminal",
+    "impedance",
+    "aes3",
+    "mic",
+    "dante"
+  ],
+  "author": "Anthony Kuzub",
+  "license": "MIT"
+}

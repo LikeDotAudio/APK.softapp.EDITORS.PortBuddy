@@ -1,0 +1,8 @@
+{
+  "name": "Port & Terminal Buddy",
+  "icon": "📍",
+  "group": "Design",
+  "subGroup": "Hardware & Devices",
+  "description": "Port & Terminal Inspector: configure discrete port electrical parameters, signal formats (Mic, Line, AES3, MADI, SDI, HDMI, USB), nominal levels (+4dBu, -10dBV), electrical impedance (600Ω, 110Ω, 75Ω), and phantom power flags.",
+  "app": "APK:Softapps/EDITORS/EDITORS.PortBuddy/index.html"
+}
