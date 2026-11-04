@@ -195,19 +195,19 @@ export class PortApp {
 
     if (conn.includes('XLR') || conn.includes('CIRCULAR')) {
       connectorVisual = `
-        <circle cx="320" cy="90" r="50" fill="#080C16" stroke="#4A9EFF" stroke-width="3"/>
-        <circle cx="320" cy="50" r="8" fill="#121A2F" stroke="#F4902C" stroke-width="2"/>
-        <text x="320" y="53" fill="#F0F4F8" font-size="9" text-anchor="middle">1</text>
-        <circle cx="290" cy="105" r="8" fill="#121A2F" stroke="#F4902C" stroke-width="2"/>
-        <text x="290" y="108" fill="#F0F4F8" font-size="9" text-anchor="middle">2</text>
-        <circle cx="350" cy="105" r="8" fill="#121A2F" stroke="#F4902C" stroke-width="2"/>
-        <text x="350" y="108" fill="#F0F4F8" font-size="9" text-anchor="middle">3</text>
-        <path d="M 314 40 L 326 40" stroke="#8B9BB4" stroke-width="2"/>
+        <circle cx="320" cy="90" r="50" fill="#121212" stroke="#4A9EFF" stroke-width="3"/>
+        <circle cx="320" cy="50" r="8" fill="#18181b" stroke="#F4902C" stroke-width="2"/>
+        <text x="320" y="53" fill="#f4f4f5" font-size="9" text-anchor="middle">1</text>
+        <circle cx="290" cy="105" r="8" fill="#18181b" stroke="#F4902C" stroke-width="2"/>
+        <text x="290" y="108" fill="#f4f4f5" font-size="9" text-anchor="middle">2</text>
+        <circle cx="350" cy="105" r="8" fill="#18181b" stroke="#F4902C" stroke-width="2"/>
+        <text x="350" y="108" fill="#f4f4f5" font-size="9" text-anchor="middle">3</text>
+        <path d="M 314 40 L 326 40" stroke="#888888" stroke-width="2"/>
       `;
     } else if (conn.includes('RJ45') || conn.includes('ETHERNET')) {
       connectorVisual = `
-        <rect x="270" y="55" width="100" height="70" rx="4" fill="#080C16" stroke="#4A9EFF" stroke-width="2"/>
-        <rect x="290" y="110" width="60" height="20" fill="#121A2F" stroke="#4A9EFF" stroke-width="1.5"/>
+        <rect x="270" y="55" width="100" height="70" rx="4" fill="#121212" stroke="#4A9EFF" stroke-width="2"/>
+        <rect x="290" y="110" width="60" height="20" fill="#18181b" stroke="#4A9EFF" stroke-width="1.5"/>
         <line x1="285" y1="65" x2="285" y2="85" stroke="#F4902C" stroke-width="2"/>
         <line x1="295" y1="65" x2="295" y2="85" stroke="#F4902C" stroke-width="2"/>
         <line x1="305" y1="65" x2="305" y2="85" stroke="#F4902C" stroke-width="2"/>
@@ -219,8 +219,8 @@ export class PortApp {
       `;
     } else if (conn.includes('BNC')) {
       connectorVisual = `
-        <circle cx="320" cy="90" r="40" fill="#080C16" stroke="#4A9EFF" stroke-width="3"/>
-        <circle cx="320" cy="90" r="24" fill="#121A2F" stroke="#2B3C5D" stroke-width="2"/>
+        <circle cx="320" cy="90" r="40" fill="#121212" stroke="#4A9EFF" stroke-width="3"/>
+        <circle cx="320" cy="90" r="24" fill="#18181b" stroke="#2B3C5D" stroke-width="2"/>
         <circle cx="320" cy="90" r="5" fill="#F4902C"/>
         <!-- Bayonet lugs -->
         <rect x="272" y="86" width="8" height="8" rx="2" fill="#4A9EFF"/>
@@ -228,34 +228,34 @@ export class PortApp {
       `;
     } else {
       connectorVisual = `
-        <rect x="260" y="60" width="120" height="60" rx="6" fill="#080C16" stroke="#4A9EFF" stroke-width="2"/>
+        <rect x="260" y="60" width="120" height="60" rx="6" fill="#121212" stroke="#4A9EFF" stroke-width="2"/>
         <text x="320" y="95" fill="#F4902C" font-size="12" font-family="JetBrains Mono, monospace" text-anchor="middle">${conn || 'GENERIC'}</text>
       `;
     }
 
     const svg = `
       <svg viewBox="0 0 ${width} ${height}" width="100%" height="${height}" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="${width}" height="${height}" fill="#080C16" rx="8"/>
+        <rect x="0" y="0" width="${width}" height="${height}" fill="#121212" rx="8"/>
 
         <!-- Left Specs Card -->
-        <rect x="20" y="20" width="180" height="140" rx="6" fill="#121A2F" stroke="#1E2A45" stroke-width="1"/>
+        <rect x="20" y="20" width="180" height="140" rx="6" fill="#18181b" stroke="#2c2c2c" stroke-width="1"/>
         <text x="30" y="44" fill="#F4902C" font-size="13" font-weight="bold" font-family="JetBrains Mono, monospace">${this.model.portId}</text>
-        <text x="30" y="64" fill="#8B9BB4" font-size="11" font-family="sans-serif">${this.model.signalFormat}</text>
-        <text x="30" y="84" fill="#8B9BB4" font-size="11" font-family="sans-serif">Level: <tspan fill="#F0F4F8">${this.model.level}</tspan></text>
-        <text x="30" y="104" fill="#8B9BB4" font-size="11" font-family="sans-serif">Z: <tspan fill="#F0F4F8">${this.model.impedance}</tspan></text>
-        <text x="30" y="124" fill="#8B9BB4" font-size="11" font-family="sans-serif">Direction: <tspan fill="#4A9EFF">${this.model.direction}</tspan></text>
+        <text x="30" y="64" fill="#888888" font-size="11" font-family="sans-serif">${this.model.signalFormat}</text>
+        <text x="30" y="84" fill="#888888" font-size="11" font-family="sans-serif">Level: <tspan fill="#f4f4f5">${this.model.level}</tspan></text>
+        <text x="30" y="104" fill="#888888" font-size="11" font-family="sans-serif">Z: <tspan fill="#f4f4f5">${this.model.impedance}</tspan></text>
+        <text x="30" y="124" fill="#888888" font-size="11" font-family="sans-serif">Direction: <tspan fill="#4A9EFF">${this.model.direction}</tspan></text>
         ${isPhantom ? '<rect x="30" y="132" width="68" height="18" rx="3" fill="#EF4444"/><text x="64" y="145" fill="#FFFFFF" font-size="10" font-weight="bold" text-anchor="middle">+48V ⏚</text>' : ''}
 
         <!-- Center Faceplate Connector Preview -->
         ${connectorVisual}
 
         <!-- Right Pin Count & Physical Spec -->
-        <rect x="440" y="20" width="180" height="140" rx="6" fill="#121A2F" stroke="#1E2A45" stroke-width="1"/>
+        <rect x="440" y="20" width="180" height="140" rx="6" fill="#18181b" stroke="#2c2c2c" stroke-width="1"/>
         <text x="450" y="44" fill="#4A9EFF" font-size="12" font-weight="bold" font-family="sans-serif">Physical Pinout</text>
-        <text x="450" y="68" fill="#8B9BB4" font-size="11" font-family="sans-serif">Pins Defined: <tspan fill="#F0F4F8">${this.model.pinout.length}</tspan></text>
-        <text x="450" y="90" fill="#8B9BB4" font-size="11" font-family="sans-serif">PoE Rating: <tspan fill="#F0F4F8">${this.model.poeClass}</tspan></text>
-        <text x="450" y="112" fill="#8B9BB4" font-size="11" font-family="sans-serif">Wavelength: <tspan fill="#F0F4F8">${this.model.opticalWavelength}</tspan></text>
-        <text x="450" y="134" fill="#8B9BB4" font-size="11" font-family="sans-serif">Connector: <tspan fill="#F4902C">${this.model.connector}</tspan></text>
+        <text x="450" y="68" fill="#888888" font-size="11" font-family="sans-serif">Pins Defined: <tspan fill="#f4f4f5">${this.model.pinout.length}</tspan></text>
+        <text x="450" y="90" fill="#888888" font-size="11" font-family="sans-serif">PoE Rating: <tspan fill="#f4f4f5">${this.model.poeClass}</tspan></text>
+        <text x="450" y="112" fill="#888888" font-size="11" font-family="sans-serif">Wavelength: <tspan fill="#f4f4f5">${this.model.opticalWavelength}</tspan></text>
+        <text x="450" y="134" fill="#888888" font-size="11" font-family="sans-serif">Connector: <tspan fill="#F4902C">${this.model.connector}</tspan></text>
       </svg>
     `;
 
