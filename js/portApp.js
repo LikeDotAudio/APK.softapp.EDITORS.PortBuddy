@@ -55,6 +55,27 @@ export class PortApp {
 
     this.host = connectPortHost(S, this.model, { onLoaded: () => this.render() });
     S.inheritTheme();
+    S.describe({
+      name: 'Port Buddy',
+      does: 'Describes one physical port: connector, direction, signal format, level, impedance, PoE, optics, phantom power and its pin map.',
+      inputs: [
+        { name: 'Port block', from: 'the CAD block this editor was opened on (host@1 load)', kind: 'cad' },
+        { name: 'Block file', from: '.json picked with Open Block', kind: 'file' },
+        { name: 'Connector choices', from: 'config/connectors.json', kind: 'file' },
+        { name: 'Interface Map', from: 'APKSoftapp.interfaces(): the retained Interfaces table', kind: 'bus', topic: 'Gui/Interfaces/Map/…' },
+      ],
+      outputs: [
+        { name: 'Port block', to: 'the CAD drawing on Save & Return, or a .json download standalone', kind: 'cad' },
+        { name: 'Live edits', to: 'the CAD after every change (blockChanged)', kind: 'cad' },
+      ],
+      controls: [
+        { name: 'Port fields', how: 'port id, label, connector, direction, signal format, level, impedance, PoE class, optical wavelength, phantom power' },
+        { name: '+ Add Terminal Pin', how: 'adds a pin; edit pin, function and conductor colour in the table, × deletes it' },
+        { name: 'Use (Interface Map)', how: 'fills this port from a real interface on the bus' },
+        { name: 'Save & Return / ✕', how: 'save into the CAD (or download) / close the editor' },
+      ],
+      problems: ['bad_json', 'bad_input', 'file_unreadable', 'http_not_found', 'bus_missing', 'not_in_cad'],
+    });
     this.initControls();
     this.render();
     this.loadConnectors();
@@ -82,12 +103,15 @@ export class PortApp {
   }
 
   async loadConnectors() {
-    try {
-      const r = await fetch(new URL('../config/connectors.json', import.meta.url), { cache: 'no-store' });
-      if (!r.ok) throw new Error(`${r.status}`);
-      this.connectorConfig = await r.json();
-    } catch (err) {
-      if (this.statusEl) this.statusEl.textContent = `Could not read config/connectors.json (${err.message}).`;
+    const r = await this.S.fetchJson(new URL('../config/connectors.json', import.meta.url),
+      { cache: 'no-store', timeoutMs: 8000, subject: 'config/connectors.json' });
+    if (r.ok) this.connectorConfig = r.data;
+    else {
+      if (this.statusEl) this.statusEl.textContent = `Could not read config/connectors.json (${r.problem.detail || r.problem.title}).`;
+      this.S.showProblem(r.problem, {
+        fix: ['config/connectors.json beside index.html lists the connector choices; until it reads, only connectors from the Interface Map are offered.'],
+        onRetry: () => this.loadConnectors(),
+      });
     }
     this.renderConnectors();
     this.renderForm(true);
@@ -118,8 +142,16 @@ export class PortApp {
       },
     });
     if (!this.statusEl) return;
-    if (!t.ok) this.statusEl.textContent = t.reason;
-    else if (!t.rows().length) this.statusEl.textContent = 'Waiting for the Interface Map on the bus (nothing retained yet, or no broker).';
+    if (!t.ok) {
+      this.statusEl.textContent = t.reason;
+      if (t.problem) {
+        this.S.showProblem(t.problem, {
+          subject: 'Interface Map',
+          fix: ['The port can still be described by hand; only the Use buttons need the Interface Map.'],
+          onRetry: () => this.readInterfaces(),
+        });
+      }
+    } else if (!t.rows().length) this.statusEl.textContent = 'Waiting for the Interface Map on the bus (nothing retained yet, or no broker).';
   }
 
   initControls() {
@@ -141,9 +173,13 @@ export class PortApp {
             this.render();
             this.changed();
           } catch (err) {
-            alert('Invalid block file: ' + err.message);
+            this.S.showProblem(err.name === 'SyntaxError' ? 'bad_json' : 'bad_input', {
+              subject: file.name, detail: err.message,
+              fix: ['Open a Port Buddy block (.json saved by this editor, blockType port_terminal).'],
+            });
           }
         };
+        reader.onerror = () => this.S.showProblem('file_unreadable', { subject: file.name, detail: reader.error && reader.error.message });
         reader.readAsText(file);
       };
       input.click();
