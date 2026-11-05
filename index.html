@@ -6,6 +6,7 @@
   <title>Port & Terminal Buddy</title>
   <link rel="stylesheet" href="./vendor/apk-contracts/apk-tokens.css">
   <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="./vendor/apk-table/apk-table.css">
   <style>
     .split-layout {
       display: grid;
@@ -76,44 +77,10 @@
       border: 1px solid var(--border-color, #2c2c2c);
       border-radius: 6px;
     }
-    table.data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-    table.data-table th {
-      background: var(--surface-secondary, #0f0f11);
-      color: var(--text-muted, #888888);
-      padding: 8px 10px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color, #2c2c2c);
+    .interfaces-status {
       font-size: 11px;
-      text-transform: uppercase;
-    }
-    table.data-table td {
-      padding: 6px 10px;
-      border-bottom: 1px solid var(--border-color, #2c2c2c);
-      color: var(--text-bright, #f4f4f5);
-    }
-    .inline-cell {
-      background: rgba(255, 255, 255, 0.02);
-      cursor: text;
-    }
-    .inline-cell:focus {
-      outline: 1px solid var(--accent-orange, #F4902C);
-      background: rgba(244, 144, 44, 0.1);
-    }
-    .btn-delete {
-      background: transparent;
-      border: none;
-      color: #FF5A5A;
-      cursor: pointer;
-      font-weight: bold;
-      padding: 2px 6px;
-      border-radius: 3px;
-    }
-    .btn-delete:hover {
-      background: rgba(255, 90, 90, 0.2);
+      color: var(--text-muted, #888888);
+      margin: 0 0 8px;
     }
     .checkbox-row {
       display: flex;
@@ -144,7 +111,6 @@
     </div>
     <div class="window-actions">
       <button id="btn-open" class="btn-action">📂 Open Block</button>
-      <button id="btn-discovered" class="btn-action">⚡ Discovered</button>
       <button id="btn-save" class="btn-action btn-primary">💾 Save & Return</button>
       <button id="btn-close" class="btn-action btn-close">✕</button>
     </div>
@@ -167,21 +133,7 @@
         </div>
         <div class="field-group">
           <label>Physical Connector</label>
-          <select id="prop-connector">
-            <option value="XLR-3F">XLR-3F (Female)</option>
-            <option value="XLR-3M">XLR-3M (Male)</option>
-            <option value="XLR-5F">XLR-5F (DMX / Stereo)</option>
-            <option value="1/4-TRS">1/4" (6.35mm) TRS Jack</option>
-            <option value="1/4-TS">1/4" (6.35mm) TS Unbalanced</option>
-            <option value="BNC-75">BNC 75Ω (SDI / WordClock)</option>
-            <option value="BNC-50">BNC 50Ω (RF Antenna)</option>
-            <option value="RJ45">RJ45 EtherCON / Cat6A</option>
-            <option value="LC-Duplex">LC Duplex Optical</option>
-            <option value="Phoenix-3P">Euroblock / Phoenix 3-pin</option>
-            <option value="DB25-Tascam">DB25 (Tascam 8-Ch Pinout)</option>
-            <option value="HDMI-2.1">HDMI 2.1 Type-A</option>
-            <option value="USB-C">USB-C PD / Alternate-Mode</option>
-          </select>
+          <select id="prop-connector"><!-- config/connectors.json + the Interface Map --></select>
         </div>
         <div class="field-group">
           <label>Signal Direction</label>
@@ -234,22 +186,22 @@
 
         <div style="font-weight: 600; font-size: 12px; margin-bottom: 8px; color: var(--text-bright);">Connector Pinout & Conductor Color Code</div>
         <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th style="width: 20%;">Pin / Terminal #</th>
-                <th style="width: 45%;">Electrical Function</th>
-                <th style="width: 25%;">Conductor Color</th>
-                <th style="width: 10%; text-align: center;">Action</th>
-              </tr>
-            </thead>
-            <tbody id="pins-table-body"></tbody>
-          </table>
+          <div id="pins-table"></div>
+        </div>
+
+        <div style="font-weight: 600; font-size: 12px; margin: 16px 0 8px; color: var(--text-bright);">Real Interfaces (Interface Map)</div>
+        <p id="interfaces-status" class="interfaces-status" role="status">Reading the Interface Map…</p>
+        <div class="table-container">
+          <div id="interfaces-table"></div>
         </div>
       </div>
     </div>
   </div>
 
+  <script src="./vendor/apk-contracts/apk-contracts.global.js"></script>
+  <script src="/FrontEnd/shared/apk-bus.js"></script>
+  <script src="./vendor/apk-softapp/apk-softapp.js"></script>
+  <script src="./vendor/apk-table/apk-table.js"></script>
   <script type="module" src="js/portApp.js"></script>
 </body>
 </html>
