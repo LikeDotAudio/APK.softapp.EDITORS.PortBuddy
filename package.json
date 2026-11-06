@@ -1,6 +1,6 @@
 {
   "name": "port-terminal-buddy",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Port & Terminal Buddy on APK.audio",
   "type": "module",
   "scripts": {
