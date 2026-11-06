@@ -2,7 +2,10 @@
 // MIT Licence. Free, for everyone, for ever. Full text in LICENSE at the root.
 // The port block in and out of the CAD over cad.like.audio/host@1, through the
 // vendored APKSoftapp client, and a port taken from a row of the contract's
-// Interfaces table. No DOM here: the tests drive it.
+// Interfaces table. No DOM here: the tests drive it. Standalone, Save is Save
+// Model: the block and its .ifc twin (portIfc.js); Open reads either back.
+
+import { portFromIfc, portToIfc } from './portIfc.js';
 
 export const EDITOR = 'Port Buddy';
 export const BLOCK_TYPE = 'port_terminal';
@@ -54,4 +57,29 @@ export function connectorChoices(config, rows) {
     if (k && !list.some((c) => c.value === k)) list.push({ value: k, label: `${k} (Interface Map)` });
   }
   return list;
+}
+
+/**
+ * Save: inside the CAD the block goes back (Save & Return). Standalone it is Save Model: the block
+ * (port_<id>.json) AND its .ifc twin (js/portIfc.js), both or neither.
+ */
+export async function savePort(S, host, model) {
+  const block = model.toBlock();
+  const meta = saveMeta(model);
+  if (host.embedded || typeof S.saveModel !== 'function') return { ok: true, via: host.save(block, meta) };
+  return S.saveModel(block, { name: meta.filename, toIfc: (b) => portToIfc(b, { name: meta.filename }) });
+}
+
+/** Open Model: a port .ifc (this editor's twin, else the first port of any model) or a port block .json, into the model. */
+export async function openPort(S, model, opts = {}) {
+  const r = await S.openModel({
+    ...opts,
+    fromIfc: (text) => portFromIfc(text),
+    fromJson: (data) => {
+      if (!data || typeof data !== 'object' || Array.isArray(data)) throw new TypeError('this is not a port block: it is not a JSON object');
+      return data;
+    },
+  });
+  if (r.ok) model.fromBlock(r.model);
+  return r;
 }

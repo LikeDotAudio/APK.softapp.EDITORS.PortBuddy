@@ -2,7 +2,7 @@
 // MIT Licence. Free, for everyone, for ever. Full text in LICENSE at the root.
 
 export class PortTerminalModel {
-  constructor(portId = 'MIC_IN_1', connector = 'XLR-3F') {
+  constructor(portId = 'MIC_IN_1', connector = 'XLR3-F') {
     this.portId = portId;
     this.label = 'Microphone Preamp 1';
     this.connector = connector;

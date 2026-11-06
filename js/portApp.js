@@ -2,7 +2,7 @@
 // MIT Licence. Free, for everyone, for ever. Full text in LICENSE at the root.
 
 import { PortTerminalModel } from './portModel.js';
-import { connectPortHost, saveMeta, portFromInterface, connectorChoices } from './portHost.js';
+import { connectPortHost, saveMeta, portFromInterface, connectorChoices, savePort, openPort } from './portHost.js';
 
 export { PortTerminalModel };
 
@@ -60,21 +60,22 @@ export class PortApp {
       does: 'Describes one physical port: connector, direction, signal format, level, impedance, PoE, optics, phantom power and its pin map.',
       inputs: [
         { name: 'Port block', from: 'the CAD block this editor was opened on (host@1 load)', kind: 'cad' },
-        { name: 'Block file', from: '.json picked with Open Block', kind: 'file' },
+        { name: 'Model file', from: 'Open Model: a port .ifc (this editor\'s twin, else the first port of any IFC model) or block .json', kind: 'file' },
         { name: 'Connector choices', from: 'config/connectors.json', kind: 'file' },
         { name: 'Interface Map', from: 'APKSoftapp.interfaces(): the retained Interfaces table', kind: 'bus', topic: 'Gui/Interfaces/Map/…' },
       ],
       outputs: [
-        { name: 'Port block', to: 'the CAD drawing on Save & Return, or a .json download standalone', kind: 'cad' },
+        { name: 'Port block', to: 'the CAD drawing on Save & Return; standalone Save Model writes port_<id>.json AND port_<id>.ifc (IFC4X3_ADD2: one IfcDistributionPort on an IfcDistributionElementType, connector by the closed vocabulary)', kind: 'file' },
         { name: 'Live edits', to: 'the CAD after every change (blockChanged)', kind: 'cad' },
       ],
       controls: [
         { name: 'Port fields', how: 'port id, label, connector, direction, signal format, level, impedance, PoE class, optical wavelength, phantom power' },
         { name: '+ Add Terminal Pin', how: 'adds a pin; edit pin, function and conductor colour in the table, × deletes it' },
         { name: 'Use (Interface Map)', how: 'fills this port from a real interface on the bus' },
-        { name: 'Save & Return / ✕', how: 'save into the CAD (or download) / close the editor' },
+        { name: 'Open Model', how: 'pick a port .ifc or block .json' },
+        { name: 'Save & Return / ✕', how: 'save into the CAD (standalone: Save Model, the .json and its .ifc twin) / close the editor' },
       ],
-      problems: ['bad_json', 'bad_input', 'file_unreadable', 'http_not_found', 'bus_missing', 'not_in_cad'],
+      problems: ['bad_json', 'bad_input', 'file_unreadable', 'http_not_found', 'bus_missing', 'not_in_cad', 'save_failed'],
     });
     this.initControls();
     this.render();
@@ -83,6 +84,28 @@ export class PortApp {
   }
 
   changed() { this.host.changed(this.model.toBlock(), saveMeta(this.model)); }
+
+  /** Save & Return in the CAD; standalone Save Model: the block .json and its .ifc twin, both or neither. */
+  async save() {
+    const r = await savePort(this.S, this.host, this.model);
+    if (!r.ok && !r.cancelled) this.S.showProblem(r.problem || 'save_failed', { onRetry: () => this.save() });
+    return r;
+  }
+
+  /** Open Model: a port .ifc or block .json. */
+  async open() {
+    const r = await openPort(this.S, this.model);
+    if (!r.ok) {
+      if (!r.cancelled) this.S.showProblem(r.problem, {
+        fix: ['Open a port .ifc or block .json saved by Port Buddy (Save outside the CAD writes both), or any IFC model with a port.'],
+        onRetry: () => this.open(),
+      });
+      return r;
+    }
+    this.render();
+    this.changed();
+    return r;
+  }
 
   useButton(row) {
     const b = document.createElement('button');
@@ -155,35 +178,8 @@ export class PortApp {
   }
 
   initControls() {
-    document.getElementById('btn-save')?.addEventListener('click', () => {
-      this.host.save(this.model.toBlock(), saveMeta(this.model));
-    });
-
-    document.getElementById('btn-open')?.addEventListener('click', () => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.json';
-      input.onchange = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          try {
-            this.model.fromBlock(JSON.parse(evt.target.result));
-            this.render();
-            this.changed();
-          } catch (err) {
-            this.S.showProblem(err.name === 'SyntaxError' ? 'bad_json' : 'bad_input', {
-              subject: file.name, detail: err.message,
-              fix: ['Open a Port Buddy block (.json saved by this editor, blockType port_terminal).'],
-            });
-          }
-        };
-        reader.onerror = () => this.S.showProblem('file_unreadable', { subject: file.name, detail: reader.error && reader.error.message });
-        reader.readAsText(file);
-      };
-      input.click();
-    });
+    document.getElementById('btn-save')?.addEventListener('click', () => this.save());
+    document.getElementById('btn-open')?.addEventListener('click', () => this.open());
 
     document.getElementById('btn-close')?.addEventListener('click', () => this.host.close());
 

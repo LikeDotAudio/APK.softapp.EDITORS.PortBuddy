@@ -1,18 +1,18 @@
 {
-  "_about": "Port Buddy's connector choices. Tunables only: the page builds its Physical Connector list from this file, and adds the kind of a real interface picked from the Interface Map (the contract's Interfaces table). A block that names a connector not listed here keeps it.",
+  "_about": "Port Buddy's connector choices. Each value is a canonical id of the closed connector vocabulary (contracts/ifc/connectors.json), so the .ifc twin carries its ISO 16739 words. Tunables only: the page builds its Physical Connector list from this file, and adds the kind of a real interface picked from the Interface Map (the contract's Interfaces table). A block that names a connector not listed here keeps it.",
   "connectors": [
-    { "value": "XLR-3F", "label": "XLR-3F (Female)" },
-    { "value": "XLR-3M", "label": "XLR-3M (Male)" },
-    { "value": "XLR-5F", "label": "XLR-5F (DMX / Stereo)" },
-    { "value": "1/4-TRS", "label": "1/4\" (6.35 mm) TRS Jack" },
-    { "value": "1/4-TS", "label": "1/4\" (6.35 mm) TS Unbalanced" },
-    { "value": "BNC-75", "label": "BNC 75 Ω (SDI / WordClock)" },
-    { "value": "BNC-50", "label": "BNC 50 Ω (RF Antenna)" },
+    { "value": "XLR3-F", "label": "XLR-3F (Female)" },
+    { "value": "XLR3-M", "label": "XLR-3M (Male)" },
+    { "value": "XLR5-F", "label": "XLR-5F (DMX / Stereo)" },
+    { "value": "TRS-6.35-F", "label": "1/4\" (6.35 mm) TRS Jack" },
+    { "value": "TS-6.35-F", "label": "1/4\" (6.35 mm) TS Unbalanced" },
+    { "value": "COAX-BNC", "label": "BNC 75 Ω (SDI / WordClock)" },
+    { "value": "COAX-BNC-50", "label": "BNC 50 Ω (RF Antenna)" },
     { "value": "RJ45", "label": "RJ45 EtherCON / Cat6A" },
-    { "value": "LC-Duplex", "label": "LC Duplex Optical" },
-    { "value": "Phoenix-3P", "label": "Euroblock / Phoenix 3-pin" },
-    { "value": "DB25-Tascam", "label": "DB25 (Tascam 8-Ch Pinout)" },
-    { "value": "HDMI-2.1", "label": "HDMI 2.1 Type-A" },
+    { "value": "FIBRE-LC-DUPLEX", "label": "LC Duplex Optical" },
+    { "value": "EUROBLOCK-3", "label": "Euroblock / Phoenix 3-pin" },
+    { "value": "DSUB-25", "label": "DB25 (Tascam 8-Ch Pinout)" },
+    { "value": "HDMI", "label": "HDMI 2.1 Type-A" },
     { "value": "USB-C", "label": "USB-C PD / Alternate-Mode" }
   ]
 }
